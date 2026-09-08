@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<title>네트워크 보안 운영 · 서논술형 수행평가 대비 · 학생용 화면</title>
+<style>
+  :root{
+    --navy:#151B33; --ink:#1B1F27; --sub:#5B6472; --line:#E4E8F1;
+    --intro:#D9691D; --intro-bg:#FFF3E7;
+    --dev1:#2E5090; --dev1-bg:#EEF2FA;
+    --dev2:#1E7A4C; --dev2-bg:#E9F6EF;
+    --dev3:#A9760D; --dev3-bg:#FCF2DE;
+    --wrap:#6A3FA0; --wrap-bg:#F3EDFB;
+    --accent:#12B4A8;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:"맑은 고딕","Apple SD Gothic Neo",sans-serif;
+    color:var(--ink); background:#F6F7FB; line-height:1.6; font-size:19px;
+  }
+  header.top{
+    position:sticky; top:0; z-index:50; background:var(--navy); color:#fff;
+    padding:16px 28px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;
+    box-shadow:0 2px 10px rgba(0,0,0,.2);
+  }
+  header.top h1{font-size:19px; margin:0; font-weight:800;}
+  nav.jump{display:flex; gap:10px; margin-left:auto; flex-wrap:wrap;}
+  nav.jump a{
+    color:#fff; text-decoration:none; font-size:15px; font-weight:800;
+    padding:7px 15px; border-radius:24px; background:rgba(255,255,255,.14);
+    border:1px solid rgba(255,255,255,.3);
+  }
+  nav.jump a:hover{background:rgba(255,255,255,.28);}
+  main{max-width:980px; margin:0 auto; padding:26px 24px 100px;}
+
+  section.block{
+    border-radius:20px; margin-bottom:34px; overflow:hidden;
+    border:1px solid var(--line); scroll-margin-top:80px; background:#fff;
+  }
+  section.block .blk-head{ padding:22px 28px; color:#fff; }
+  section.block .blk-head .time-badge{
+    background:rgba(255,255,255,.28); border-radius:24px; padding:4px 16px; font-weight:800; font-size:15px;
+  }
+  section.block .blk-head h2{margin:8px 0 0; font-size:26px;}
+  section#intro .blk-head{background:linear-gradient(135deg,var(--intro),#B5501A);}
+  section#dev1 .blk-head{background:linear-gradient(135deg,var(--dev1),#1F3864);}
+  section#dev2 .blk-head{background:linear-gradient(135deg,var(--dev2),#155C3A);}
+  section#dev3 .blk-head{background:linear-gradient(135deg,var(--dev3),#7C5A08);}
+  section#wrap .blk-head{background:linear-gradient(135deg,var(--wrap),#4E2C7A);}
+  .blk-body{padding:28px 32px;}
+
+  h3.stitle{font-size:20px; margin:28px 0 12px; color:var(--navy); padding-left:12px; border-left:5px solid var(--dev1); }
+  section#intro h3.stitle{border-color:var(--intro);}
+  section#dev2 h3.stitle{border-color:var(--dev2);}
+  section#dev3 h3.stitle{border-color:var(--dev3);}
+  section#wrap h3.stitle{border-color:var(--wrap);}
+  h3.stitle:first-child{margin-top:0;}
+  h4.ssub{font-size:16px; margin:18px 0 8px; color:var(--sub); font-weight:800;}
+
+  table.grid{width:100%; border-collapse:collapse; margin:10px 0 20px; font-size:16.5px;}
+  table.grid th,table.grid td{border:1px solid var(--line); padding:11px 13px; text-align:left; vertical-align:top;}
+  table.grid th{background:var(--dev1-bg); color:var(--dev1); font-weight:800;}
+  section#intro table.grid th{background:var(--intro-bg); color:var(--intro);}
+  section#dev2 table.grid th{background:var(--dev2-bg); color:var(--dev2);}
+  section#dev3 table.grid th{background:var(--dev3-bg); color:var(--dev3);}
+  section#wrap table.grid th{background:var(--wrap-bg); color:var(--wrap);}
+  table.grid td.step{font-weight:800; color:var(--navy); text-align:center; white-space:nowrap;}
+
+  .note{color:var(--sub); font-size:15.5px; font-style:italic; margin:8px 0 16px;}
+
+  /* 예상문항 카드 */
+  .qcard{
+    background:#F9FAFC; border:1px solid var(--line); border-radius:16px;
+    padding:22px 26px; margin:0 0 22px;
+  }
+  .qcard .tag{display:inline-block; background:var(--wrap-bg); color:var(--wrap); font-weight:800; font-size:13px; padding:3px 12px; border-radius:12px; margin-bottom:10px;}
+  .qcard .q{font-size:19px; font-weight:800; margin:0 0 14px; color:var(--navy);}
+  .writearea{
+    background:#fff; border:2px dashed var(--line); border-radius:10px;
+    height:120px; margin-bottom:14px;
+    background-image: repeating-linear-gradient(to bottom, transparent, transparent 33px, var(--line) 34px);
+  }
+  .writearea::before{content:"✏️ 여기에 답을 직접 서술해 보세요"; display:block; padding:10px 14px; color:var(--sub); font-size:14px; font-style:italic;}
+
+  details.reveal{margin-top:6px;}
+  details.reveal > summary{
+    list-style:none; cursor:pointer; display:inline-flex; align-items:center; gap:8px;
+    font-weight:800; font-size:16px; color:#fff; background:var(--accent);
+    padding:9px 20px; border-radius:24px; user-select:none; width:fit-content;
+  }
+  details.reveal > summary::-webkit-details-marker{display:none;}
+  details.reveal > summary:before{content:"👆";}
+  details.reveal[open] > summary{background:#0E8B82;}
+  details.reveal[open] > summary:before{content:"✅";}
+  .ans-box{
+    margin-top:14px; background:#fff; border:2px solid var(--accent); border-radius:12px;
+    padding:18px 22px;
+  }
+  .ans-box .lab{display:block; font-size:14px; font-weight:800; color:#0E8B82; margin-bottom:6px;}
+  .ans-box .txt{font-size:17px; font-weight:600; color:var(--ink); line-height:1.7;}
+  .ans-box .rubric-title{font-weight:800; font-size:14px; color:var(--sub); margin:14px 0 4px;}
+  .ans-box ul.rubric{margin:0; padding-left:20px; font-size:15px; color:var(--ink);}
+  .ans-box ul.rubric li{margin-bottom:4px;}
+
+  .recap{
+    background:#FFFDF4; border:2px solid #E8D48A; border-radius:14px;
+    padding:16px 24px; margin:18px 0 24px;
+  }
+  .recap .recap-title{margin:0 0 8px; font-weight:800; color:#8A6D00; font-size:16px;}
+  .recap p.recap-body{margin:0; font-size:15.5px; color:var(--ink); line-height:1.8;}
+  .recap table{width:100%; border-collapse:collapse; margin-top:6px; font-size:14.5px;}
+  .recap table th,.recap table td{border:1px solid #E8D48A; padding:8px 12px; text-align:left; vertical-align:top;}
+  .recap table th{background:#F5E9B8; color:#8A6D00; font-weight:800;}
+
+  .examnote{
+    background:#EEF2FA; border:2px solid #C8D4EC; border-radius:14px; padding:18px 24px; margin:0 0 20px;
+    font-size:16px;
+  }
+  .examnote b{color:var(--dev1);}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <h1>🔐 네트워크 보안 운영 · 서논술형 수행평가 대비</h1>
+  <nav class="jump">
+    <a href="#intro">도입</a>
+    <a href="#dev1">전개1</a>
+    <a href="#dev2">전개2</a>
+    <a href="#dev3">전개3</a>
+    <a href="#wrap">정리</a>
+  </nav>
+</header>
+
+<main>
+
+  <!-- ===================== 도입 ===================== -->
+  <section class="block" id="intro">
+    <div class="blk-head"><span class="time-badge">도입</span><h2>서논술형 수행평가, 어떻게 준비할까?</h2></div>
+    <div class="blk-body">
+
+      <div class="examnote">
+        <b>형식</b>: 서논술형(근거를 포함해 문장으로 서술) &nbsp;·&nbsp; <b>범위</b>: 학습1~4 전체 &nbsp;·&nbsp; <b>문항 유형</b>: 사례분석형 · 비교서술형 · 절차나열형 · 복합형
+      </div>
+      <p>채점기준 공통 원칙 세 가지: ① 핵심 키워드가 정확히 포함되었는가 ② 키워드 간의 논리적 연결("왜 그런지")이 서술되었는가 ③ 문제에서 요구한 조건(3문장 이상, 순서대로 등)을 지켰는가.</p>
+      <p>오늘은 새로운 내용을 배우는 시간이 아니라, 이미 배운 것을 <b>시험에 쓸 수 있는 문장</b>으로 다시 정리하고 연습하는 시간입니다. 표는 눈으로 훑고, 예상문항마다 반드시 직접 써본 뒤 모범답안·채점기준과 비교해 보세요.</p>
+    </div>
+  </section>
+
+  <!-- ===================== 전개1 ===================== -->
+  <section class="block" id="dev1">
+    <div class="blk-head"><span class="time-badge">전개1</span><h2>학습1~2 총정리</h2></div>
+    <div class="blk-body">
+
+      <h3 class="stitle">학습1. 네트워크 보안 솔루션 운영하기</h3>
+      <h4 class="ssub">① 요구사항 4대 측면</h4>
+      <table class="grid">
+        <tr><th>측면</th><th>핵심 내용</th></tr>
+        <tr><td class="step">기밀성</td><td>허용된 트래픽만 통신 허용, 유해 패킷 차단 / 중요 정보 암호화 / 허가되지 않은 사용자 접근 불가</td></tr>
+        <tr><td class="step">무결성</td><td>전송 과정에서 패킷이 위조·변조되지 않아야 함</td></tr>
+        <tr><td class="step">가용성</td><td>패킷이 제때 도달하도록 대역폭 보장 / DoS 상황에서도 정상 서비스 제공</td></tr>
+        <tr><td class="step">부인방지</td><td>종단 간 IP·포트 식별, 메시지 전송 보장</td></tr>
+      </table>
+      <h4 class="ssub">② 네트워크 장비 보안 요구사항 5범주</h4>
+      <table class="grid">
+        <tr><th>범주</th><th>핵심 내용</th></tr>
+        <tr><td class="step">1. 식별 및 인증</td><td>디폴트 비밀번호 금지, 안전한 비밀번호, 인증 실패 대응, 비밀번호 마스킹</td></tr>
+        <tr><td class="step">2. 자체 보안 관리</td><td>ACL 트래픽 제어, SNMP 모니터링, 무결성 검사</td></tr>
+        <tr><td class="step">3. 세션·접근 통제</td><td>미활동 시 세션 잠금, 동시 접속 제한, 권한 설정</td></tr>
+        <tr><td class="step">4. 전송 데이터 보호</td><td>SSL/TLS·HTTPS·SSH·IPSEC 등 암호화 채널</td></tr>
+        <tr><td class="step">5. 감사 기록</td><td>인증 성공·실패, 설정 변경, 사건 일시·유형 기록</td></tr>
+      </table>
+
+      <h3 class="stitle">학습2. 네트워크 보안 솔루션 운영 개선하기</h3>
+      <h4 class="ssub">① 보안 솔루션 4종</h4>
+      <table class="grid">
+        <tr><th>솔루션</th><th>핵심 개념</th></tr>
+        <tr><td class="step">방화벽</td><td>허용 규칙에 따라 패킷 통과 여부 결정. 종류: 스크리닝 라우터·베스천 호스트</td></tr>
+        <tr><td class="step">VPN</td><td>정보를 암호화해 공중망으로 전송 — 유출 차단</td></tr>
+        <tr><td class="step">IDS</td><td>이상 패킷을 실시간 <b>탐지</b>(차단은 하지 않음)</td></tr>
+        <tr><td class="step">IPS</td><td>탐지 + 자동 <b>차단</b>까지 수행하는 능동형 솔루션</td></tr>
+      </table>
+      <h4 class="ssub">② 취약점 분석 7단계</h4>
+      <table class="grid">
+        <tr><th>단계</th><th>이름</th><th>내용</th></tr>
+        <tr><td class="step">1</td><td>대상 시스템 결정</td><td>목표 시스템의 IP 확인</td></tr>
+        <tr><td class="step">2</td><td>가동 시스템 탐색</td><td>핑거프린팅으로 살아있는 호스트 탐색</td></tr>
+        <tr><td class="step">3</td><td>서비스 목록 탐색</td><td>포트 스캐닝 — 가장 중요한 단계</td></tr>
+        <tr><td class="step">4</td><td>서비스 인식</td><td>시그니처로 서비스 확인</td></tr>
+        <tr><td class="step">5</td><td>애플리케이션 확인</td><td>유형·벤더 파악, 충돌 여부 확인</td></tr>
+        <tr><td class="step">6</td><td>네트워크 취약점 확인</td><td>커스텀 공격으로 실제 취약점 확인</td></tr>
+        <tr><td class="step">7</td><td>취약점 보고</td><td>위험도·대책 보고</td></tr>
+      </table>
+      <p class="note">포트별 서비스 11개: 21 FTP · 23 Telnet · 25 SMTP · 53 DNS · 69 TFTP · 80 HTTP · 110 POP3 · 111 RPC · 138 NetBIOS · 143 IMAP · 161 SNMP</p>
+
+      <h3 class="stitle">예상 서논술형 문항 (학습1~2)</h3>
+
+      <div class="qcard">
+        <span class="tag">사례분석형 · 예상문항 1</span>
+        <p class="q">"한 쇼핑몰 서버에 짧은 시간 동안 비정상적으로 많은 접속 요청이 몰려 정상 고객이 결제 페이지에 접근하지 못했다." 침해된 요구사항 측면과 이유를 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">가용성 측면이 침해되었다. 가용성은 네트워크 서비스가 필요한 시간에 정상적으로 제공되어야 한다는 요구사항인데, 비정상적인 접속 폭주(DoS성 트래픽)로 인해 정상 사용자가 서비스를 이용하지 못했기 때문이다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: '가용성'을 정확히 쓰고 DoS·트래픽 폭주와 '정상 서비스 제공 실패'를 연결해 서술</li>
+              <li>중: '가용성'은 맞혔으나 이유 설명이 단순 재진술</li>
+              <li>하: 기밀성·무결성 등과 혼동하거나 이유를 쓰지 못함</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">비교서술형 · 예상문항 2</span>
+        <p class="q">방화벽, IDS, IPS의 차이를 '탐지·차단 방식'을 중심으로 한 문단으로 비교 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">방화벽은 관리자가 미리 허용한 규칙에 따라 패킷을 통과시키거나 막는 사전 규칙 기반의 수동적 통제 수단이다. IDS는 이상 패킷을 실시간 탐지하지만 직접 차단하지는 않는다. IPS는 IDS의 탐지 기능에 더해 유해 트래픽 차단·의심 세션 종료 등 실제 방지 조치까지 자동 수행하는 능동형 솔루션이다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: 세 솔루션의 탐지/차단 여부 차이를 모두 정확히 서술하고 발전 관계까지 언급</li>
+              <li>중: 개념은 맞으나 서로 간 차이가 불분명</li>
+              <li>하: 한두 개 솔루션의 개념을 누락·오서술</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">절차나열형 · 예상문항 3</span>
+        <p class="q">취약점 분석 7단계를 순서대로 쓰고, 3단계(서비스 목록 탐색)가 왜 '가장 중요한 단계'로 꼽히는지 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">대상 시스템 결정 → 가동 시스템 탐색 → 서비스 목록 탐색 → 서비스 인식 → 애플리케이션 확인 → 네트워크 취약점 확인 → 취약점 보고. 3단계는 포트 스캐닝으로 열린 포트·서비스를 파악해야, 이후 단계에서 어떤 서비스·애플리케이션에 취약점이 있는지 정확히 진단할 수 있는 전제 정보가 되기 때문이다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: 7단계 순서·이름 모두 정확, 이유를 논리적으로 서술</li>
+              <li>중: 순서는 맞았으나 이유가 빈약, 또는 그 반대</li>
+              <li>하: 순서를 절반 이상 틀리거나 이유를 쓰지 못함</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 전개2 ===================== -->
+  <section class="block" id="dev2">
+    <div class="blk-head"><span class="time-badge">전개2</span><h2>학습3 총정리</h2></div>
+    <div class="blk-body">
+
+      <h3 class="stitle">3-1. 네트워크 보안 위협 차단</h3>
+      <h4 class="ssub">① 공격 유형 10종 및 3가지 분류</h4>
+      <table class="grid">
+        <tr><th>번호</th><th>이름(분류)</th><th>핵심 내용</th></tr>
+        <tr><td class="step">1</td><td>서비스 거부 DoS (A)</td><td>목표를 장애 상태로 만들어 서비스를 거부하도록 함</td></tr>
+        <tr><td class="step">2</td><td>분산 서비스 거부 DDoS (A)</td><td>분산된 다수 컴퓨터로 동시에 공격</td></tr>
+        <tr><td class="step">3</td><td>SYN 플러드 (A)</td><td>미완성 SYN 패킷으로 연결 자원 고갈</td></tr>
+        <tr><td class="step">4</td><td>UDP 플러드 (A)</td><td>UDP 패킷을 계속 보내 속도 저하</td></tr>
+        <tr><td class="step">5</td><td>포트 스캔 (B)</td><td>여러 포트를 조사 — 정찰 목적</td></tr>
+        <tr><td class="step">6</td><td>핑 스캔 (B)</td><td>ICMP 에코로 여러 목적지 정찰</td></tr>
+        <tr><td class="step">7</td><td>죽음의 핑 (C)</td><td>긴 ICMP 패킷으로 시스템 파괴 유발</td></tr>
+        <tr><td class="step">8</td><td>IP 스푸핑 (C)</td><td>IP·이메일·ID 위조</td></tr>
+        <tr><td class="step">9</td><td>랜드 공격 (C)</td><td>SYN+IP스푸핑 혼합</td></tr>
+        <tr><td class="step">10</td><td>티어드롭 (C)</td><td>패킷 오프셋 조작으로 재조립 오류 유발</td></tr>
+      </table>
+      <p class="note">분류 기준 — A.트래픽 폭주형 · B.정찰/탐색형 · C.패킷 조작/위장형</p>
+      <h4 class="ssub">② 내/외부 점검 항목</h4>
+      <table class="grid">
+        <tr><th>점검 항목</th><th>외부</th><th>내부</th></tr>
+        <tr><td>Whois</td><td class="step">○</td><td>—</td></tr>
+        <tr><td>DNS 질의 / SNMP 데이터 점검 / 호스트 식별</td><td class="step">○</td><td class="step">○</td></tr>
+        <tr><td>포트 스캐닝 / 파일 공유 / 네트워크 취약점</td><td class="step">○</td><td class="step">○</td></tr>
+        <tr><td>방화벽 점검</td><td class="step">○</td><td>필요시</td></tr>
+        <tr><td>네트워크 장비 점검</td><td class="step">○</td><td class="step">○</td></tr>
+      </table>
+
+      <h3 class="stitle">3-2. 복구 및 문서화</h3>
+      <table class="grid">
+        <tr><th>구분</th><th>핵심 내용</th></tr>
+        <tr><td class="step">네트워크 기반 증거</td><td>IDS·라우터·방화벽·인증서버 로그</td></tr>
+        <tr><td class="step">호스트 기반 증거</td><td>시스템 시간, 휘발성 데이터, 파일 MAC 정보</td></tr>
+        <tr><td class="step">보고서 작성 원칙</td><td>6하원칙(누가·무엇을·언제·어디서·어떻게·왜)에 따라 객관적으로 서술</td></tr>
+      </table>
+      <h4 class="ssub">ISMS-P 순환 주기 5단계</h4>
+      <table class="grid">
+        <tr><th>순서</th><th>단계</th></tr>
+        <tr><td class="step">1</td><td>정책 수립</td></tr>
+        <tr><td class="step">2</td><td>범위 설정</td></tr>
+        <tr><td class="step">3</td><td>위험 관리</td></tr>
+        <tr><td class="step">4</td><td>구현</td></tr>
+        <tr><td class="step">5</td><td>사후 관리</td></tr>
+      </table>
+
+      <h3 class="stitle">예상 서논술형 문항 (학습3)</h3>
+
+      <div class="qcard">
+        <span class="tag">사례분석형 · 예상문항 4</span>
+        <p class="q">"공격자가 목적지·발신지 IP를 모두 피해 서버 자신의 IP로 위장한 SYN 패킷을 보냈더니, 서버가 스스로에게 응답을 반복하며 멈췄다." 공격 이름과 분류(A/B/C), 이유를 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">랜드 공격이다. C.패킷 조작/위장형에 속한다. SYN 패킷의 발신지·목적지 IP를 실제와 다르게 위조해 서버가 자기 자신과 통신하도록 속이는 방식이기 때문이다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: '랜드 공격'과 'C.패킷 조작/위장형' 모두 정확, IP 위조가 왜 해당하는지 서술</li>
+              <li>중: 공격 이름은 맞았으나 분류 근거가 미흡</li>
+              <li>하: SYN 플러드 등 다른 공격과 혼동</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">절차나열형 · 예상문항 5</span>
+        <p class="q">침해사고 발생 시 '데이터 수집 → 데이터 분석 → 보고서 작성' 순서로 대응하는 이유를, 각 단계의 역할 중심으로 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">데이터 수집 단계에서 증거를 충분히 확보하지 않으면 분석 단계에서 원인을 규명할 근거가 없다. 데이터 분석 단계에서 수집 정보를 종합 조사해 원인·경로를 밝혀야, 보고서 작성 단계에서 6하원칙에 따라 객관적 근거로 명확히 기술할 수 있다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: 세 단계가 순차적으로 '근거를 쌓아가는' 관계임을 논리적으로 서술</li>
+              <li>중: 나열은 했으나 단계 간 연결 논리가 약함</li>
+              <li>하: 순서가 틀리거나 역할을 잘못 서술</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">서술형 · 예상문항 6</span>
+        <p class="q">침해사고 분석 보고서를 6하원칙에 따라 객관적으로 서술해야 하는 이유를 3문장 이상 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">보고서를 읽는 상급자·소송 관계자는 컴퓨터 지식이 부족한 경우가 많아 누구나 이해할 수 있게 작성해야 한다. 6하원칙을 지키면 세부 사항이 누락 없이 명확히 전달되어 의사 결정자가 상황을 정확히 이해할 수 있다. 또한 법적 다툼 시 디지털 포렌식으로 수집한 객관적 증거를 바탕으로 작성된 보고서여야 논쟁에 효과적으로 대응할 수 있다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: '이해하기 쉬움'·'누락 방지'·'법적 대응 근거' 중 2가지 이상을 3문장 이상으로 서술</li>
+              <li>중: 이유를 1가지만 서술하거나 문장 수 부족</li>
+              <li>하: 6하원칙의 의미를 잘못 이해</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 전개3 ===================== -->
+  <section class="block" id="dev3">
+    <div class="blk-head"><span class="time-badge">전개3</span><h2>학습4 총정리</h2></div>
+    <div class="blk-body">
+
+      <h3 class="stitle">4-1. 업데이트 계획 수립</h3>
+      <p class="note">패치 관리 시스템(PMS): 보안 패치를 자동 검색·설치하는 솔루션. 패치 프라이머리 서버 + 패치 배포 서버로 구성</p>
+      <table class="grid">
+        <tr><th>순서</th><th>업데이트 계획 수립 절차 (9단계 요약)</th></tr>
+        <tr><td class="step">1~3</td><td>정보 수집 → 자산 목록 작성 → 솔루션 목록·벤더 패치방법 정리</td></tr>
+        <tr><td class="step">4~6</td><td>취약점·패치 검토 → 운영환경 분석 → 적용 계획 수립(복구계획 포함)</td></tr>
+        <tr><td class="step">7~9</td><td>패치 테스트 → 패치 적용 → 모니터링</td></tr>
+      </table>
+
+      <h3 class="stitle">4-2. 업데이트 적용</h3>
+      <table class="grid">
+        <tr><th>구분</th><th>핵심 내용</th></tr>
+        <tr><td class="step">백업</td><td>특정 파일·전체 이미지·변경사항 스냅샷 형태 / 정기 또는 변경 전 주기</td></tr>
+        <tr><td class="step">적용 3단계</td><td>테스트 패치 → 업데이트 수행(부하 적은 시점) → 모니터링·복구</td></tr>
+      </table>
+
+      <h3 class="stitle">예상 서논술형 문항 (학습4)</h3>
+
+      <div class="qcard">
+        <span class="tag">절차나열형 · 예상문항 7</span>
+        <p class="q">업데이트 적용 전체 과정을 '계획 수립 → 적용 → 사후 조치'로 나누어, 각 단계에서 반드시 포함되어야 할 요소를 한 가지씩 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">계획 수립 단계는 사전 복구 계획을 함께 마련해야 한다. 적용 단계는 실제 적용 전 테스트 패치로 먼저 검증해야 한다. 사후 조치 단계는 모니터링 후 장애 발생 시 사전 복구 계획에 따라 원상 복구하는 절차가 포함되어야 한다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: 세 단계 각각에 '복구계획 마련'·'테스트 패치'·'모니터링·복구'를 정확히 대응</li>
+              <li>중: 단계는 나누었으나 요소가 일부 부정확</li>
+              <li>하: 단계 구분이 잘못되었거나 요소를 서술하지 못함</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">서술형 · 예상문항 8</span>
+        <p class="q">모든 업데이트(패치)를 자동으로 즉시 적용하면 안 되는 이유를 서술하시오.</p>
+        <div class="writearea"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">보안 패치가 예상치 못한 시스템 동작·기능 장애를 일으켜 정상 운영 중인 서비스에 영향을 줄 수 있기 때문이다. 특히 중요한 네트워크일수록 테스트 환경에서 충분히 검증 후 적용하고, 문제 발생에 대비한 복구 계획도 마련해야 한다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: '예상치 못한 장애 가능성'과 '사전 테스트·복구계획 필요성'을 모두 서술</li>
+              <li>중: 둘 중 하나만 서술</li>
+              <li>하: 핵심에서 벗어난 이유를 서술</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== 정리 ===================== -->
+  <section class="block" id="wrap">
+    <div class="blk-head"><span class="time-badge">정리</span><h2>종합 모의문항 & 마무리</h2></div>
+    <div class="blk-body">
+
+      <div class="recap">
+        <p class="recap-title">📋 오늘 배운 내용 총정리</p>
+        <p class="recap-body">학습1(요구사항 4대측면·장비보안 5범주) → 학습2(솔루션 4종·개선절차 4단계·취약점분석 7단계·포트 11개) → 학습3(공격유형 10종·3분류·내외부점검항목·복구문서화 6하원칙·ISMS-P 5단계) → 학습4(PMS·계획수립 9단계·백업 및 적용 3단계)</p>
+      </div>
+
+      <div class="qcard">
+        <span class="tag">복합형 · 예상문항 9 (종합)</span>
+        <p class="q">한 기업이 "패치관리시스템(PMS)에 존재하던 취약점을 이용해 다수의 사내 PC가 악성코드에 감염되었고, 이 과정에서 SNMP 데이터가 대량으로 노출되어 서비스가 일시 중단되었다"는 침해사고를 겪었다. (1) 가장 직접적으로 침해된 요구사항 측면 (2) 사전에 점검했어야 할 점검 항목 (3) 데이터 수집부터 보고서 작성까지의 대응 절차를 순서대로 서술하시오.</p>
+        <div class="writearea" style="height:170px;"></div>
+        <details class="reveal"><summary>모범답안 · 채점기준 확인</summary>
+          <div class="ans-box">
+            <span class="lab">모범답안</span>
+            <div class="txt">(1) 서비스가 중단되었으므로 가용성 측면이 침해되었다. (2) 내/외부 점검 항목표 중 'SNMP 데이터 점검'과 '네트워크 취약점 점검'(PMS 자체 취약점 점검)을 사전에 수행했어야 한다. (3) IDS·방화벽 로그 등 네트워크 기반 증거와 휘발성 데이터 등 호스트 기반 증거를 수집 → 수집 데이터를 종합 분석해 침해 원인(PMS 취약점)을 규명 → 6하원칙에 따라 발생 개요·취약점 분석·영향도 분석·조치 사항을 포함한 보고서를 작성한다.</div>
+            <div class="rubric-title">채점기준</div>
+            <ul class="rubric">
+              <li>상: (1)(2)(3) 모두 학습1·학습3의 정확한 용어로 논리적으로 연결</li>
+              <li>중: 세 소문항 중 2개는 정확하나 1개가 미흡</li>
+              <li>하: 대부분 핵심 키워드 없이 서술되거나 순서·용어가 틀림</li>
+            </ul>
+          </div>
+        </details>
+      </div>
+
+      <p class="note">오늘 다룬 9개 예상문항과 비슷한 형태로 실제 수행평가가 출제됩니다. 채점기준의 '핵심 키워드 + 논리적 연결'을 기억하며 복습하세요.</p>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
